@@ -1,23 +1,26 @@
-import logo from './logo.svg';
 import './App.css';
+import { useEffect, useState } from 'react';
+import GalleryFrame from './GalleryFrame';
+import ButtonsBar from './ButtonsBar';
 
 function App() {
+  const [ artID, setArtID ] = useState(100)
+  const [ image, setImage ] = useState(null)
+
+  useEffect(() => {
+    async function fetchData () {
+      const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${artID}`)
+      const data = await response.json();
+      const { primaryImageSmall } = data;
+      setImage (primaryImageSmall)
+    }
+    fetchData()
+  }, [artID])
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <GalleryFrame imageURL={image}></GalleryFrame>
+      <ButtonsBar setArtID={setArtID}></ButtonsBar>
     </div>
   );
 }
